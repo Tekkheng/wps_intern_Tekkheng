@@ -10,8 +10,10 @@ import InputText from 'primevue/inputtext'
 const LogsStore = useLogsStore()
 const isVisible = ref(false)
 const status = ref('')
+const myStatusId = ref('')
 // const truckStore = useTruckStore()
-const showModal = () => {
+const showModal = (id) => {
+  myStatusId.value = id
   isVisible.value = true
 }
 
@@ -19,11 +21,11 @@ const removedItem = (noItem) => {
   LogsStore.deleteItemLogs(noItem)
 }
 
-const toggleDriverStatus = (noItem) => {
-  console.log(noItem, status.value)
-  LogsStore.updateLogStatus(noItem, status.value)
+const toggleDriverStatus = () => {
+  LogsStore.updateLogStatus(myStatusId.value, status.value)
   isVisible.value = false
   status.value = ''
+  myStatusId.value = ''
 }
 
 onMounted(async () => {
@@ -142,7 +144,7 @@ onMounted(async () => {
                   </button>
                 </RouterLink>
 
-                <button class="btn btn-outline-secondary d-block me-2" @click.prevent="showModal()">
+                <button class="btn btn-outline-secondary d-block me-2" @click.prevent="showModal(data.id)">
                   <i :class="data.status !== 'Disetujui' ? 'pi pi-check' : 'pi pi-times'"></i>
                 </button>
 
@@ -181,7 +183,7 @@ onMounted(async () => {
                     <Button
                       type="button"
                       label="Send"
-                      @click="toggleDriverStatus(data.id)"
+                      @click="toggleDriverStatus()"
                     ></Button>
                   </div>
                 </Dialog>

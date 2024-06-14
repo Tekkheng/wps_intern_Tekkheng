@@ -157,6 +157,7 @@ export const useLogsStore = defineStore('LogsStore', {
             confirmButtonText: 'Okay',
             timer: 1500
           })
+          console.log(response);
           const Logs = this.Logs.find((Logs) => Logs.id === idItem)
           if (Logs) {
             Logs.status = status
