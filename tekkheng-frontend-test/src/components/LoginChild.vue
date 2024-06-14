@@ -150,8 +150,8 @@ const showInput = async () => {
 <style>
 .password-toggle {
   position: absolute;
-  top: 20.4rem;
-  right: 5.5rem;
+  top: 18rem;
+  right: 3.9rem;
   transform: translateY(-50%);
   cursor: pointer;
   color: #999;
@@ -159,8 +159,8 @@ const showInput = async () => {
 
 .logoKey {
   position: absolute;
-  top: 20.4rem;
-  left: 5.5rem;
+  top: 18rem;
+  left: 3.8rem;
   transform: translateY(-50%);
   cursor: pointer;
   color: #999;
@@ -168,8 +168,8 @@ const showInput = async () => {
 
 .icon-email {
   position: absolute;
-  top: 14.1rem;
-  left: 5.5rem;
+  top: 11.7rem;
+  left: 3.8rem;
   transform: translateY(-50%);
   cursor: pointer;
   color: #999;
