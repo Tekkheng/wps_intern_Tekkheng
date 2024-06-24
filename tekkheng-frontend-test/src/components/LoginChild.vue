@@ -75,7 +75,7 @@ const showInput = async () => {
       <InlineMessage
         severity="error"
         class="position-absolute"
-        style="bottom: 27rem"
+        style="bottom: 24rem"
         v-if="handleInput.msg_err.length > 0"
         >{{ handleInput.msg_err }}</InlineMessage
       >
@@ -137,7 +137,7 @@ const showInput = async () => {
       </div>
       <button
         :disabled="(!handleInput.email && !handleInput.password) || isLoading"
-        class="btn btn-success text-light btn-block w-100 mt-3"
+        class="btn btn-primary text-light btn-block w-100 mt-3"
         type="submit"
         @click.prevent="showInput()"
       >

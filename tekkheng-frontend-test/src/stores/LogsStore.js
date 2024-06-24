@@ -66,11 +66,12 @@ export const useLogsStore = defineStore('LogsStore', {
           try {
             const response = await axios.delete(`log/${noItem}`)
             if (response.status === 200) {
-              console.log('Events:', this.Logs)
-              console.log('No item:', noItem)
-              const index = this.Logs.findIndex((_event) => _event.id == noItem)
-              console.log('Index:', index)
-
+              // console.log('Events:', this.Logs)
+              // console.log('No item:', noItem)
+              // console.log(this.Logs);
+              this.fetchItemsLogs()
+              const index = this.Logs.findIndex((log) => log.id == noItem)
+              // console.log('Index:', index)
               this.Logs.splice(index, 1)
 
               Swal.fire({

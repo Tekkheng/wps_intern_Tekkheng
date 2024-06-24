@@ -1,17 +1,22 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useLogsStore } from '@/stores/LogsStore'
+import useUsersStore from '@/stores/UsersStore'
+
 import DataTable from 'primevue/datatable'
 import TableColumn from 'primevue/column'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
-// import useTruckStore from '@/stores/truckStore'
+
 const LogsStore = useLogsStore()
+const UsersStore = useUsersStore()
+
 const isVisible = ref(false)
 const status = ref('')
 const myStatusId = ref('')
-// const truckStore = useTruckStore()
+
+const filterLogsStoreShow = ref('')
 const showModal = (id) => {
   myStatusId.value = id
   isVisible.value = true
@@ -28,18 +33,27 @@ const toggleDriverStatus = () => {
   myStatusId.value = ''
 }
 
+const updateFilterLogs = () => {
+  filterLogsStoreShow.value = LogsStore.Logs.filter(
+    (log) => log.user_data.id === UsersStore.userLoggedin.id
+  )
+}
+
 onMounted(async () => {
-  //   await truckStore.fetchItems()
   await LogsStore.fetchItemsLogs()
+  await UsersStore.fetchUser()
 
-  console.log(LogsStore.Logs)
-  //   console.log(truckStore.truck[0].tipe_truck)
-
-  //   const tipe_driver_truck_string = truckStore.truck.find(
-  //     (truck) => truck.tipe_truck == LogsStore.driver.tipe_driver_truck
-  //   )
-  //   console.log(tipe_driver_truck_string)
+  updateFilterLogs()
 })
+
+watch(
+  () => LogsStore.Logs,
+  () => {
+    updateFilterLogs()
+  },
+  { deep: true }
+)
+
 </script>
 
 <template>
@@ -55,11 +69,8 @@ onMounted(async () => {
               </button>
             </RouterLink>
           </div>
-          <!-- <div v-for="(d, index) in LogsStore.Logs" :key="index">
-            <h1>{{ d.log }}</h1>
-          </div> -->
           <DataTable
-            :value="LogsStore.Logs"
+            :value="filterLogsStoreShow"
             paginator
             :rows="5"
             :rowsPerPageOptions="[5, 10, 20, 50]"
@@ -94,12 +105,6 @@ onMounted(async () => {
             <TableColumn
               field="log"
               header="Log"
-              bodyStyle="overflow: visible"
-              :headerStyle="{ backgroundColor: 'lightblue', color: 'white' }"
-            ></TableColumn>
-            <TableColumn
-              field="status"
-              header="Status"
               bodyStyle="overflow: visible"
               :headerStyle="{ backgroundColor: 'lightblue', color: 'white' }"
             ></TableColumn>
@@ -144,7 +149,10 @@ onMounted(async () => {
                   </button>
                 </RouterLink>
 
-                <button class="btn btn-outline-secondary d-block me-2" @click.prevent="showModal(data.id)">
+                <button
+                  class="btn btn-outline-secondary d-block me-2"
+                  @click.prevent="showModal(data.id)"
+                >
                   <i :class="data.status !== 'Disetujui' ? 'pi pi-check' : 'pi pi-times'"></i>
                 </button>
 
@@ -180,11 +188,7 @@ onMounted(async () => {
                       severity="secondary"
                       @click="isVisible = false"
                     ></Button>
-                    <Button
-                      type="button"
-                      label="Send"
-                      @click="toggleDriverStatus()"
-                    ></Button>
+                    <Button type="button" label="Send" @click="toggleDriverStatus()"></Button>
                   </div>
                 </Dialog>
               </template>
