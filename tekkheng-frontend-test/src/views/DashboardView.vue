@@ -7,11 +7,14 @@ import interactionPlugin from '@fullcalendar/interaction'
 import { useLogsStore } from '@/stores/LogsStore'
 
 import listPlugin from '@fullcalendar/list'
+import useUsersStore from '@/stores/UsersStore'
 
 const LogsStore = useLogsStore()
+const UsersStore = useUsersStore()
 
-let eventHandler = ref(null)
-let isAdd = ref(null)
+// let eventHandler = ref(null)
+
+// let isAdd = ref(null)
 
 const calendarOptions = ref({
   plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
@@ -61,73 +64,60 @@ function handleWeekendsToggle() {
   calendarOptions.value.weekends = !calendarOptions.value.weekends // update a property
 }
 
-function deleteHandler() {
-  // closeModal()
-  // const clickInfo = eventHandler.value
-  // const current_id = clickInfo.event.id
-  // schedulesStore.deleteItemSchedule(current_id, clickInfo.event)
-  // isAdd.value = null
-  // eventHandler.value = null
-}
+// function deleteHandler() {}
 
 // update ui calendar event
-const isUpdate = ref(null)
+// const isUpdate = ref(null)
 function handlerEventDrop(clickInfo) {
-  // eventHandler.value = clickInfo
-  // isAdd.value = false
-  // isUpdate.value = true
-  // openModal()
+  console.log(clickInfo)
 }
 
 function handleEventClick(clickInfo) {
-  // set eventHandler && isAdd untuk kondisi if add atau show
-  // eventHandler.value = clickInfo
-  // isAdd.value = false
-  // openModal()
+  console.log(clickInfo)
 }
 
 // handle add data
 function handleDateSelect(selectInfo) {
-  // set eventHandler && isAdd untuk kondisi if add atau show
-  // eventHandler.value = selectInfo
-  // isAdd.value = true
-  // openModal()
-}
-const isModalOpened = ref(false)
-const openModal = () => {
-  isModalOpened.value = true
-}
-const closeModal = () => {
-  if (isUpdate.value) {
-    eventHandler.value.revert()
-  }
-  isModalOpened.value = false
-  isUpdate.value = null
+  console.log(selectInfo)
 }
 
-const clearValue = () => {
-  eventHandler.value = null
-  isAdd.value = null
-  isUpdate.value = null
-}
+// const isModalOpened = ref(false)
+// const openModal = () => {
+//   isModalOpened.value = true
+// }
+
+// const closeModal = () => {
+//   if (isUpdate.value) {
+//     eventHandler.value.revert()
+//   }
+//   isModalOpened.value = false
+//   isUpdate.value = null
+// }
+
+// const clearValue = () => {
+//   eventHandler.value = null
+//   isAdd.value = null
+//   isUpdate.value = null
+// }
 
 watchEffect(() => {
-  console.log(LogsStore.logs)
-  if (LogsStore.logs) {
-    const events = LogsStore.logs
-      .filter((log) => log.status)
-      .map((log) => ({
-        id: '2',
-        title: 'title',
-        start: new Date('2024-01-17' + 'T09:00:00'),
-        end: new Date('2024-01-18' + 'T16:00:00'),
-        backgroundColor: 'green',
-        // textColor: 'white',
-        extendedProps: {
-          nama: 'nama',
-          email: 'email'
-        }
-      }))
+  console.log(LogsStore.Logs)
+  console.log(UsersStore.userLoggedin)
+  if (LogsStore.Logs) {
+    const events = LogsStore.Logs.filter(
+      (log) => log.user_data.id === UsersStore.userLoggedin.id
+    ).map((log) => ({
+      id: log.id,
+      title: log.log,
+      start: new Date(log.date),
+      // backgroundColor: 'blue',
+      // textColor: 'white',
+      extendedProps: {
+        nama: log.user_data.nama,
+        email: log.user_data.email,
+        role: log.user_data.role
+      }
+    }))
     calendarOptions.value.events = events
   }
 })
@@ -135,11 +125,13 @@ watchEffect(() => {
 onMounted(async () => {
   // let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
   await LogsStore.fetchItemsLogs()
+  await UsersStore.fetchUser()
+  console.log(LogsStore.Logs)
 })
 </script>
 
 <template>
-  <div class="demo-app rounded" style="margin: 0rem 2rem -5rem 2rem; width: 65%">
+  <div class="demo-app rounded" style="margin: -2rem -5rem -5rem 8rem; width: 72%">
     <div class="demo-app-main">
       <label class="">
         <input type="checkbox" :checked="calendarOptions.weekends" @change="handleWeekendsToggle" />
@@ -148,11 +140,11 @@ onMounted(async () => {
       <FullCalendar class="demo-app-calendar" :options="calendarOptions">
         <template v-slot:eventContent="arg">
           <div class="fc-content">
-            <i>{{ arg.event.title }} - </i>
-            <i>{{ arg.event.extendedProps.email }}</i>
             <span v-if="arg.event.extendedProps && arg.event.extendedProps.nama">
-              - Nama {{ arg.event.extendedProps.nama }}</span
-            >
+              {{ arg.event.extendedProps.nama }}
+            </span>
+            <!-- <i> <br />{{ arg.event.extendedProps.email }}</i> -->
+            <i> <br />Log: {{ arg.event.title }}</i>
           </div>
         </template>
       </FullCalendar>
@@ -214,9 +206,10 @@ b {
 
 /* style warna text event yg hanya 1 hari*/
 .fc-event {
-  /* background-color: rgb(255, 179, 0) !important; */
+  background-color: rgb(98, 103, 234) !important;
+  color: rgb(98, 103, 234);
   /* border: 1px solid green; */
-  color: black !important;
+  color: white !important;
 }
 
 .fc-daygrid-more-link {

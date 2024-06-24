@@ -42,7 +42,7 @@ const updateFilterLogs = () => {
 onMounted(async () => {
   await LogsStore.fetchItemsLogs()
   await UsersStore.fetchUser()
-
+  console.log(LogsStore.Logs)
   updateFilterLogs()
 })
 
@@ -53,7 +53,6 @@ watch(
   },
   { deep: true }
 )
-
 </script>
 
 <template>
@@ -132,6 +131,12 @@ watch(
                 >
               </template>
             </TableColumn>
+            <TableColumn
+              field="date"
+              header="Date"
+              bodyStyle="overflow: visible"
+              :headerStyle="{ backgroundColor: 'lightblue', color: 'white' }"
+            ></TableColumn>
 
             <TableColumn
               bodyStyle="overflow: visible"

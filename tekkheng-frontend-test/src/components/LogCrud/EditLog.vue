@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 const id = route.params.id
 import Textarea from 'primevue/textarea'
+import Calendar from 'primevue/calendar'
 
 const LogsStore = useLogsStore()
 
@@ -14,12 +15,23 @@ const nama = ref('')
 const email = ref('')
 const status = ref('')
 const userId = ref('')
+const dateInput = ref('')
 
+const formatDate = (tgl) => {
+  const tahun = tgl.getFullYear()
+  const bulan = (tgl.getMonth() + 1).toString().padStart(2, '0')
+  const tanggalBulan = tgl.getDate().toString().padStart(2, '0')
+  const stringTanggal = `${tahun}-${bulan}-${tanggalBulan}`
+  return stringTanggal
+}
 const editNewItem = () => {
+  const date = new Date(dateInput.value)
+  const formattedDate = formatDate(date)
   const newData = {
     log: log.value,
     status: status.value,
-    user_id: userId.value
+    user_id: userId.value,
+    date: formattedDate
   }
   LogsStore.updateItemLogs({ id, newEditData: newData })
   log.value = ''
@@ -27,6 +39,7 @@ const editNewItem = () => {
   nama.value = ''
   email.value = ''
   userId.value = ''
+  dateInput.value = ''
 }
 
 onMounted(async () => {
@@ -40,6 +53,7 @@ onMounted(async () => {
       userId.value = Logs.user_data.id
       log.value = Logs.log
       status.value = Logs.status
+      dateInput.value = Logs.date
     }
   }
 })
@@ -62,6 +76,18 @@ onMounted(async () => {
               <div class="col-sm-2 form-label">Log</div>
               <div class="col-sm-8">
                 <Textarea v-model="log" rows="5" cols="30" />
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="tgl_berangkat" class="col-sm-2 col-form-label pe-5">Date</label>
+              <div class="col-sm-10">
+                <Calendar
+                  v-model="dateInput"
+                  showIcon
+                  :showOnFocus="true"
+                  id="tgl_berangkat"
+                  dateFormat="yy-mm-dd"
+                />
               </div>
             </div>
             <div class="mb-3 row">

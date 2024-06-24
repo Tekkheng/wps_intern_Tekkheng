@@ -30,6 +30,7 @@ class DailyLogController extends Controller
                     'log' => 'required|string|max:255',
                     'status' => 'nullable|in:Pending,Approved,Rejected',
                     'user_id' => 'required|exists:users,id',
+                    'date' => 'required|string|max:255',
                 ],
             );
             if ($validasi->fails()) {
@@ -41,6 +42,7 @@ class DailyLogController extends Controller
             $status = $req->status ?? 'Pending';
             $data->status = $status;
             $data->user_id = $req->user_id;
+            $data->date = $req->date;
             $data->save();
 
             $response = [
@@ -91,6 +93,7 @@ class DailyLogController extends Controller
                     'log' => 'required|string|max:255',
                     'status' => 'nullable|in:Pending,Approved,Rejected',
                     'user_id' => 'required|exists:users,id',
+                    'date' => 'required|string|max:255',
                 ],
             );
             if ($validasi->fails()) {
@@ -105,6 +108,7 @@ class DailyLogController extends Controller
             $data->log = $req->log;
             $data->user_id = $req->user_id;
             $data->status = $req->status;
+            $data->date = $req->date;
             $data['updated_at'] = $timestamp;
             $data->save();
             $response = [
